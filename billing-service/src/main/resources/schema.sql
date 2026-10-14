@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS invoice(id VARCHAR(36) PRIMARY KEY,tenant_id VARCHAR(80) NOT NULL,shipment_id VARCHAR(36) NOT NULL,user_id VARCHAR(80) NOT NULL,amount_cents BIGINT NOT NULL,state VARCHAR(20) NOT NULL,created_at BIGINT NOT NULL,UNIQUE(tenant_id,shipment_id));
+CREATE TABLE IF NOT EXISTS payment_receipt(invoice_id VARCHAR(36) PRIMARY KEY,tenant_id VARCHAR(80) NOT NULL,amount_cents BIGINT NOT NULL,paid_at BIGINT NOT NULL,provider VARCHAR(30) NOT NULL);

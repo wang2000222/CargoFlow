@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS tracking_event(id VARCHAR(36) PRIMARY KEY,tenant_id VARCHAR(80) NOT NULL,shipment_id VARCHAR(36) NOT NULL,user_id VARCHAR(80) NOT NULL,state VARCHAR(30) NOT NULL,state_version BIGINT NOT NULL,trace_id VARCHAR(80) NOT NULL,received_at BIGINT NOT NULL,UNIQUE(tenant_id,shipment_id,state_version));

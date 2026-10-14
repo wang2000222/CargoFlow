@@ -1,0 +1,57 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8104}
+spring:
+  application:
+    name: billing-service
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./.local/billing-service;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+  sql:
+    init:
+      mode: always
+cf:
+  secret: ${CF_SECRET}
+  demo: ${CF_DEMO:true}
+  jobs: ${CF_JOBS:true}
+  shipment-url: ${SHIPMENT_URL:http://127.0.0.1:8101}
+  dispatch-url: ${DISPATCH_URL:http://127.0.0.1:8102}
+  tracking-url: ${TRACKING_URL:http://127.0.0.1:8103}
+  billing-url: ${BILLING_URL:http://127.0.0.1:8104}
+---
+spring:
+  cloud:
+    nacos:
+      discovery:
+        enabled: ${CF_NACOS:false}
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      config:
+        enabled: ${CF_NACOS:false}
+        import-check:
+          enabled: false
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 2000
+            readTimeout: 4000
+            loggerLevel: none
+  rabbitmq:
+    host: ${RABBIT_HOST:127.0.0.1}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        default-requeue-rejected: false
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+cf:
+  mq: ${CF_MQ:false}
+  redis: ${CF_REDIS:false}

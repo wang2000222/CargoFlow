@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CargoFlow · 物流协同工作台</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <aside>
+      <a class="brand" href="/">C<span>↗</span> CargoFlow</a>
+      <p class="muted">物流协同工作台</p>
+      <nav id="nav">
+        <button data-view="overview">◈ 运营总览</button
+        ><button data-view="shipments">▤ 运单管理</button
+        ><button data-view="fleet">▣ 车辆调度</button
+        ><button data-view="billing">¥ 费用结算</button
+        ><button data-view="events">⇄ 事件投递</button
+        ><button data-view="architecture">⬡ 微服务架构</button>
+      </nav>
+      <div class="sidebottom">
+        PORTFOLIO / DEMO<br />独立服务 · 可靠投递 · 商家隔离
+      </div>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <small>OPERATIONS / CONTROL CENTER</small>
+          <h1 id="title">运营总览</h1>
+        </div>
+        <div class="controls">
+          <select id="account">
+            <option value="owner-a">商家 A · 负责人</option>
+            <option value="customer-a">商家 A · 客户</option>
+            <option value="operator-a">商家 A · 调度员</option>
+            <option value="finance-a">商家 A · 财务</option>
+            <option value="customer-b">商家 B · 客户</option></select
+          ><button id="refresh">刷新</button>
+        </div>
+      </header>
+      <div class="notice">
+        <span class="dot"></span> 演示环境
+        <span>支付、签收与车辆数据用于代码验收，不产生真实物流业务。</span>
+      </div>
+      <section id="content"></section>
+      <div id="toast" role="status"></div>
+      <dialog id="modal">
+        <form id="orderForm">
+          <div class="dialoghead">
+            <h2>创建运输委托</h2>
+            <button type="button" id="closeModal">×</button>
+          </div>
+          <label
+            >发货地址<input
+              name="origin"
+              required
+              maxlength="150"
+              value="苏州工业园区仓库" /></label
+          ><label
+            >收货地址<input
+              name="destination"
+              required
+              maxlength="150"
+              value="上海嘉定配送中心" /></label
+          ><label
+            >货物名称<input
+              name="cargo"
+              required
+              maxlength="100"
+              value="电子配件"
+          /></label>
+          <div class="twocol">
+            <label
+              >重量 / kg<input
+                name="weightKg"
+                type="number"
+                min="1"
+                max="100000"
+                value="120"
+                required /></label
+            ><label
+              >距离 / km<input
+                name="distanceKm"
+                type="number"
+                min="1"
+                max="10000"
+                value="110"
+                required
+            /></label>
+          </div>
+          <p class="muted">
+            演示报价：30 元起步 + 0.5 元/kg + 0.3
+            元/km。正式项目应接入合同价与线路计费规则。
+          </p>
+          <button class="primary" type="submit">提交运单</button>
+        </form>
+      </dialog>
+      <script src="/app.js"></script>
+    </main>
+  </body>
+</html>

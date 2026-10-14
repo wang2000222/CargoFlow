@@ -1,0 +1,9 @@
+**/target/
+**/.local/
+.env
+*.log
+*.mv.db
+*.trace.db
+*.pid
+.idea/
+.vscode/

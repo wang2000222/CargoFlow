@@ -1,0 +1,84 @@
+# Local integration template. Docker runtime has not been verified in the portfolio acceptance.
+x-runtime: &runtime
+  CF_SECRET: ${CF_SECRET:?Generate a shared secret with at least 32 characters}
+  CF_MQ: "true"
+  CF_REDIS: "true"
+  CF_NACOS: "false"
+  RABBIT_HOST: rabbit
+  RABBIT_USER: cargoflow
+  RABBIT_PASSWORD: ${RABBIT_PASSWORD:?Set a RabbitMQ password}
+  REDIS_HOST: redis
+  SHIPMENT_URL: http://shipment:8101
+  DISPATCH_URL: http://dispatch:8102
+  TRACKING_URL: http://tracking:8103
+  BILLING_URL: http://billing:8104
+services:
+  rabbit:
+    image: rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: cargoflow
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:?Set a RabbitMQ password}
+    ports: ["127.0.0.1:15672:15672", "127.0.0.1:5672:5672"]
+    volumes: ["rabbit-data:/var/lib/rabbitmq"]
+  redis:
+    image: redis:7-alpine
+    volumes: ["redis-data:/data"]
+    command: ["redis-server", "--appendonly", "yes"]
+  shipment:
+    build:
+      {
+        context: ..,
+        dockerfile: ops/Dockerfile,
+        args: { MODULE: shipment-service },
+      }
+    environment: *runtime
+    volumes: ["shipment-data:/app/.local"]
+    depends_on: [rabbit, redis]
+    restart: on-failure
+  dispatch:
+    build:
+      {
+        context: ..,
+        dockerfile: ops/Dockerfile,
+        args: { MODULE: dispatch-service },
+      }
+    environment: *runtime
+    volumes: ["dispatch-data:/app/.local"]
+    depends_on: [rabbit, redis]
+    restart: on-failure
+  tracking:
+    build:
+      {
+        context: ..,
+        dockerfile: ops/Dockerfile,
+        args: { MODULE: tracking-service },
+      }
+    environment: *runtime
+    volumes: ["tracking-data:/app/.local"]
+    depends_on: [rabbit, redis]
+    restart: on-failure
+  billing:
+    build:
+      {
+        context: ..,
+        dockerfile: ops/Dockerfile,
+        args: { MODULE: billing-service },
+      }
+    environment: *runtime
+    volumes: ["billing-data:/app/.local"]
+    depends_on: [rabbit, redis]
+    restart: on-failure
+  gateway:
+    build:
+      { context: .., dockerfile: ops/Dockerfile, args: { MODULE: gateway } }
+    environment: *runtime
+    ports: ["127.0.0.1:8100:8100"]
+    depends_on: [shipment, dispatch, tracking, billing]
+    restart: on-failure
+volumes:
+  rabbit-data:
+  redis-data:
+  shipment-data:
+  dispatch-data:
+  tracking-data:
+  billing-data:
